@@ -1,6 +1,15 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:BiatRDV/main.dart';
+import 'package:BiatRDV/src/business_logic/apis/userApi.dart';
+import 'package:BiatRDV/src/business_logic/models/User.dart';
+import 'package:BiatRDV/src/views/screens/chefAgenceFolder/home_chef.dart';
+import 'package:BiatRDV/src/views/screens/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:http/http.dart' as http;
 
 class SettingsClient extends StatefulWidget {
   const SettingsClient({Key? key}) : super(key: key);
@@ -61,13 +70,17 @@ class _SettingsClientState extends State<SettingsClient> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Abbes Mohamed",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600),
-            )
+            FutureBuilder(
+                future: _fetchAllUsers2(),
+                builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                  return Text(
+                    "${snapshot.data}",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
+                  );
+                })
           ],
         ),
         SizedBox(
@@ -76,16 +89,58 @@ class _SettingsClientState extends State<SettingsClient> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Client Biat",
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500),
-            )
+            FutureBuilder(
+                future: _fetchAllUsers(),
+                builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                  return Text(
+                    "Chef d'agence " + "${snapshot.data}",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  );
+                })
           ],
         ),
       ]),
     );
+  }
+
+  Future<String> _fetchAllUsers() async {
+    var mytid = await storage.read(key: "userid");
+    final userListEndpoint = URL + '/api/auth/user/' + mytid!;
+    var myt = await storage.read(key: "jwt");
+
+    final response = await http.get(Uri.parse(userListEndpoint),
+        headers: {'Authorization': 'Bearer ' + myt.toString()});
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse['idAgence']);
+    final agencesList = URL + '/api/agences/' + jsonResponse['idAgence'];
+
+    final response2 = await http.get(Uri.parse(agencesList),
+        headers: {'Authorization': 'Bearer ' + myt.toString()});
+    var jsonResponsea = json.decode(response2.body);
+
+    if (response.statusCode == 200) {
+      return jsonResponsea['agence'];
+    } else {
+      throw Exception('Failed to load Users from API');
+    }
+  }
+
+  Future<String> _fetchAllUsers2() async {
+    var mytid = await storage.read(key: "userid");
+    final userListEndpoint = URL + '/api/auth/user/' + mytid!;
+    var myt = await storage.read(key: "jwt");
+
+    final response = await http.get(Uri.parse(userListEndpoint),
+        headers: {'Authorization': 'Bearer ' + myt.toString()});
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse['id']);
+    if (response.statusCode == 200) {
+      return jsonResponse['fullname'];
+    } else {
+      throw Exception('Failed to load Users from API');
+    }
   }
 }

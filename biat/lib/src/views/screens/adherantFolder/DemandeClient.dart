@@ -181,11 +181,12 @@ class _DemandeClientState extends State<DemandeClient> {
                 )
               ],
             ),
-            SizedBox(
-              width: width / 2.7,
-            ),
+            Spacer(),
             Column(
               children: [Icon(Icons.arrow_forward)],
+            ),
+            SizedBox(
+              width: 30,
             )
           ],
         ),

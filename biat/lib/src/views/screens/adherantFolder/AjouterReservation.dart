@@ -56,6 +56,16 @@ class _AjouterReservationState extends State<AjouterReservation> {
       body: SafeArea(
           child: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Ecrire votre objet du demande",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(
+            height: 30,
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16),
             child: Row(
@@ -102,8 +112,8 @@ class _AjouterReservationState extends State<AjouterReservation> {
           GestureDetector(
             onTap: (() => dPost(typed.text)),
             child: Container(
-              width: width,
-              height: 60,
+              width: width - 32,
+              height: 70,
               decoration: BoxDecoration(
                   color: const Color(0xFF004579),
                   borderRadius: BorderRadius.circular(10)),

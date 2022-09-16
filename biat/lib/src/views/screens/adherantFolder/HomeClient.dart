@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:BiatRDV/src/business_logic/apis/userApi.dart';
 import 'package:BiatRDV/src/business_logic/models/Rdv.dart';
+import 'package:BiatRDV/src/views/screens/adherantFolder/CalendarClient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -64,6 +65,10 @@ class _HomeClientState extends State<HomeClient> {
                   child: SizedBox(),
                 ),
                 GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CalendarClient())),
                   child: Text(
                     "Voir plus",
                     style: const TextStyle(
