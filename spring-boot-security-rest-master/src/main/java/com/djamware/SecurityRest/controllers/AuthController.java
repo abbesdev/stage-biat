@@ -92,6 +92,9 @@ model.put("userType", this.users.findByEmail(username).getUserType());
 		if(userss.getStatus() !=null)
 			user.get().setStatus(userss.getStatus());
 
+		if (userss.getScore() !=null)
+			user.get().setScore(userss.getScore());
+
 
 		users.save(user.get());
 		return user.get();

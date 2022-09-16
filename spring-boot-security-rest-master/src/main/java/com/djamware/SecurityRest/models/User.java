@@ -28,6 +28,16 @@ public class User {
 
 	private boolean enabled;
 
+	private String score;
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
 	public String getStatus() {
 		return status;
 	}

@@ -13,8 +13,17 @@ private String id;
 
 	private String idAgence;
 
+	private String score;
 
-private String status;
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+	private String status;
 
 	public String getIdAgence() {
 		return idAgence;
