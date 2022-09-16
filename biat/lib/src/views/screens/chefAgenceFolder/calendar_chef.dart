@@ -47,6 +47,7 @@ class _CalendarChefState extends State<CalendarChef> {
       final Random random = new Random();
       for (var data in jsonData) {
         Rdv meetingData = Rdv(
+          id: data['id'],
           title: data['title'],
           description: data['description'],
           startDate: _convertDateFromString(data['startDate']),

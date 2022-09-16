@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../chefAgenceFolder/calendar_chef.dart';
 
 class CalendarClient extends StatefulWidget {
   const CalendarClient({Key? key}) : super(key: key);
@@ -75,27 +78,226 @@ class _CalendarClientState extends State<CalendarClient> {
             height: height / 200,
           ),
           Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
-              child: Row(
-                children: [
-                  SizedBox(
-                      width: width - 32,
-                      height: height / 1.5,
-                      child: FutureBuilder<List<Rdv>>(
-                          future: _fetchAllRdvs(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              List<Rdv>? data = snapshot.data;
-                              return _rdvListView(data);
-                            } else if (snapshot.hasError) {
-                              return Text("${snapshot.error}");
-                            }
-                            return Container(
-                              child: Text("no data"),
-                            );
-                          }))
-                ],
-              )),
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              child: FutureBuilder(
+                future: _fetchAllRdvs(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.data != null) {
+                    return SafeArea(
+                      child: Column(
+                        children: [
+                          Container(
+                              height: height / 1.3,
+                              child: SfCalendar(
+                                onTap: (CalendarTapDetails details) {
+                                  String? _rdvId = '',
+                                      _subjectText = '',
+                                      _startTimeText = '',
+                                      _endTimeText = '',
+                                      _clientText = '',
+                                      _dateText = '',
+                                      _timeDetails = '';
+
+                                  Color? _headerColor,
+                                      _viewHeaderColor,
+                                      _calendarColor;
+                                  if (details.targetElement ==
+                                          CalendarElement.appointment ||
+                                      details.targetElement ==
+                                          CalendarElement.agenda) {
+                                    final Rdv appointmentDetails =
+                                        details.appointments![0];
+                                    _rdvId = appointmentDetails.id;
+                                    _subjectText = appointmentDetails.title;
+                                    _clientText = appointmentDetails.chefId;
+                                    _dateText =
+                                        appointmentDetails.startDate.toString();
+                                    _startTimeText =
+                                        (appointmentDetails.startDate)
+                                            .toString();
+                                    _endTimeText =
+                                        (appointmentDetails.endDate).toString();
+                                    showModalBottomSheet<void>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Container(
+                                              height: height / 2,
+                                              color: Colors.white,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 30),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: <Widget>[
+                                                      Row(children: <Widget>[
+                                                        Text(
+                                                          "Objet du Rendez-vous :",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      23,
+                                                                      56,
+                                                                      84),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                      ]),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            '$_subjectText',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(children: <Widget>[
+                                                        Text(
+                                                          "Chef ID :",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      23,
+                                                                      56,
+                                                                      84),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                      ]),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            '$_clientText',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(children: <Widget>[
+                                                        Text(
+                                                          "Date and Time of Start :",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      23,
+                                                                      56,
+                                                                      84),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                      ]),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Text(
+                                                            '$_dateText',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(children: <Widget>[
+                                                        Text(
+                                                          "Date and Time of End :",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      23,
+                                                                      56,
+                                                                      84),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                      ]),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Text(
+                                                              _endTimeText
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      16)),
+                                                        ],
+                                                      ),
+                                                      ElevatedButton(
+                                                          child: const Text(
+                                                            'Annuler le rendez-vous',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                          onPressed: () {
+                                                            _deleteRdv(_rdvId
+                                                                .toString());
+                                                            userUpdate();
+                                                          }),
+                                                      ElevatedButton(
+                                                        child: const Text(
+                                                          'Fermer les details',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                      )
+                                                    ]),
+                                              )));
+                                        });
+                                  }
+                                },
+                                monthViewSettings:
+                                    MonthViewSettings(showAgenda: true),
+                                view: CalendarView.month,
+                                initialDisplayDate: DateTime.now(),
+                                dataSource: MeetingDataSource(snapshot.data),
+                              )),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      child: Center(
+                        child: Text('no internet'),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
         ]),
       )),
     );
@@ -214,15 +416,199 @@ class _CalendarClientState extends State<CalendarClient> {
     }
   }
 
+  _deleteRdv(String rdvid) async {
+    final userListEndpoint = URL + '/api/rdvs/' + rdvid;
+    var myt = await storage.read(key: "jwt");
+
+    final response = await http.delete(Uri.parse(userListEndpoint),
+        headers: {'Authorization': 'Bearer ' + myt.toString()});
+  }
+
+  Future<int> userUpdate() async {
+    var mytid = await storage.read(key: "userid");
+    var myt = await storage.read(key: "jwt");
+    final testing = await http.put(
+      Uri.parse(URL + '/api/auth/user/' + mytid!),
+      headers: {
+        'Authorization': 'Bearer ' + myt.toString(),
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive'
+      },
+      body: jsonEncode({"score": "0"}),
+    );
+    print(testing.body);
+    return testing.statusCode;
+  }
+/*
   ListView _rdvListView(data) {
     return ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return _rdvContainer(
-              data[index].title,
-              data[index].startDate.toString(),
-              data[index].endDate.toString(),
-              data[index].status);
+          return TextButton(onPressed: (){
+              showModalBottomSheet<void>(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  height: height / 2,
+                                                  color: Colors.white,
+                                                  child: Center(
+                                                      child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 30),
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: <Widget>[
+                                                          Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  "Objet du Rendez-vous :",
+                                                                  style: TextStyle(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          23,
+                                                                          56,
+                                                                          84),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ]),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '$_subjectText',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        16),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  "Client ID :",
+                                                                  style: TextStyle(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          23,
+                                                                          56,
+                                                                          84),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ]),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '$_clientText',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        16),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  "Date and Time of Start :",
+                                                                  style: TextStyle(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          23,
+                                                                          56,
+                                                                          84),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ]),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Text(
+                                                                '$_dateText',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        16),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  "Date and Time of End :",
+                                                                  style: TextStyle(
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          23,
+                                                                          56,
+                                                                          84),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ]),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Text(
+                                                                  _endTimeText
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16)),
+                                                            ],
+                                                          ),
+                                                          ElevatedButton(
+                                                            child: const Text(
+                                                              'Close Details',
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 16),
+                                                            ),
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context),
+                                                          )
+                                                        ]),
+                                                  )));
+                                            });
+                                      
+          },
+            child: _rdvContainer(
+                data[index].title,
+                data[index].startDate.toString(),
+                data[index].endDate.toString(),
+                data[index].status),
+          );
         });
-  }
+  }*/
 }

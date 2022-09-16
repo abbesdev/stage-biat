@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class Rdv {
+  String id;
   String title;
   String description;
   String clientId;
@@ -12,6 +13,7 @@ class Rdv {
   DateTime endDate;
 
   Rdv({
+    required this.id,
     required this.title,
     required this.description,
     required this.clientId,
@@ -23,6 +25,7 @@ class Rdv {
 
   factory Rdv.fromJson(Map<String, dynamic> json) {
     return Rdv(
+        id: json['id'],
         title: json['title'],
         description: json['description'],
         clientId: json['clientId'],
